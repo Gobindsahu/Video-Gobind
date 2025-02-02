@@ -1,0 +1,50 @@
+from flask import Flask, request, jsonify
+import requests
+
+app = Flask(__name__)
+
+# डेमो API कॉल (इसे असली API से रिप्लेस करें)
+def generate_video(prompt):
+    return f"https://generated-video-url.com/{prompt.replace(' ', '_')}.mp4"
+
+@app.route("/generate", methods=["POST"])
+def generate():
+    data = request.json
+    prompt = data.get("prompt", "")
+
+    if not prompt:
+        return jsonify({"error": "प्रॉम्प्ट आवश्यक है"}), 400
+
+    video_url = generate_video(prompt)
+    return jsonify({"video_url": video_url})
+
+if __name__ == "__main__":
+    app.run(debug=True)
+<br>
+import React, { useState } from "react";
+
+const VideoGenerator = () => {
+  const [prompt, setPrompt] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
+
+  const generateVideo = async () => {
+    const response = await fetch("https://your-backend-url.com/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt }),
+    });
+    const data = await response.json();
+    setVideoUrl(data.video_url);
+  };
+
+  return (
+    <div>
+      <h1>AI वीडियो जनरेटर</h1>
+      <input type="text" value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="प्रॉम्प्ट दर्ज करें" />
+      <button onClick={generateVideo}>वीडियो जनरेट करें</button>
+      {videoUrl && <video src={videoUrl} controls />}
+    </div>
+  );
+};
+
+export default VideoGenerator;
